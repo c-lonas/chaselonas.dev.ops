@@ -4,43 +4,24 @@
   become: yes
 
   tasks:
-  - name: Update APT repository cache
-    apt:
+  - name: Display OS Distribution
+    debug:
+      msg:
+        - "Distribution: {{ ansible_distribution }}"
+        - "Major Version: {{ ansible_distribution_major_version }}"
+  
+  - name: Update YUM repository cache
+    yum:
       update_cache: yes
-      cache_valid_time: 3600
-    when: ansible_os_family == 'Debian'
+    when: ansible_os_family == 'RedHat'
 
-  - name: Install Docker prerequisites
-    apt:
-      name: "{{ item }}"
+  - name: Install Docker using yum
+    yum:
+      name: docker
       state: present
-    loop:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - software-properties-common
-    when: ansible_os_family == 'Debian'
+    when: ansible_distribution == 'Amazon' and ansible_distribution_major_version == '2023'
 
-  - name: Add Docker GPG key
-    apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg
-      state: present
-    when: ansible_os_family == 'Debian'
-
-  - name: Add Docker APT repository
-    apt_repository:
-      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-      state: present
-    when: ansible_os_family == 'Debian'
-
-  - name: Install Docker
-    apt:
-      name: docker-ce
-      state: present
-      update_cache: yes
-    when: ansible_os_family == 'Debian'
-
-  - name: Ensure Docker is started and enabled at boot
+  - name: Start and enable Docker service
     service:
       name: docker
       state: started
