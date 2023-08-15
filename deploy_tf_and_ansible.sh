@@ -15,12 +15,4 @@ sleep 10
 # Install Docker on EC2 instance
 cd ../ansible
 ansible-playbook -i "${INSTANCE_IP}," --private-key=${PRIVATE_KEY_PATH} --user=ec2-user setup_docker.yml
-
-#temporary wait
-sleep 30
-
-# Clean up resources
-cd ../terraform
-terraform destroy -auto-approve -var-file=secrets.tfvars
-
 cd ..
