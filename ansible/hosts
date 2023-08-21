@@ -1,2 +1,0 @@
-[webservers]
-ec2-52-90-XX-XX.compute-1.amazonaws.com ansible_user=ec2-user
